@@ -653,6 +653,8 @@ async function addRow(){
     fillSelect(el("fName"), NAME_OPTIONS, true, "(All Names)");
     fillSelect(el("fCoin"), COIN_OPTIONS, true, "(All Coins)");
     fillSelect(el("fMonth"), MONTH_OPTIONS, true, "(All Months)");
+       const DEFAULT_MONTH = "Sunday, March 1, 2026";   // عدّلها إذا الصيغة عندك مختلفة
+el("month").value = DEFAULT_MONTH;
 
     // Date inputs calendar UX
     makeDateCalendarOnly(el("date_column"));
