@@ -185,7 +185,8 @@
             </div>
             <div>
               <label for="profit">Profit (number only)</label>
-              <input id="profit" type="number" step="0.01" placeholder="e.g. 1234.56" inputmode="decimal" />
+              <input id="profit" type="text" inputmode="decimal" placeholder="e.g. 1234.56 or 1234,56" />
+
             </div>
             <div>
               <label for="coin">Coin (dropdown)</label>
@@ -382,23 +383,18 @@ function generateMonthOptionsDbFormat(){
 
     // ========= Date inputs: “calendar only” UX =========
     function makeDateCalendarOnly(input){
-      // type="date" already opens calendar, but we reduce manual typing:
-      input.setAttribute("readonly", "readonly");
+  input.addEventListener("click", () => {
+    if (typeof input.showPicker === "function") input.showPicker();
+  });
+  input.addEventListener("focus", () => {
+    if (typeof input.showPicker === "function") input.showPicker();
+  });
+}
 
-      input.addEventListener("keydown", (e) => {
-        // block typing
-        e.preventDefault();
-      });
 
-      input.addEventListener("click", () => {
-        // Chrome / Edge support showPicker()
-        if (typeof input.showPicker === "function") input.showPicker();
-      });
 
-      input.addEventListener("focus", () => {
-        if (typeof input.showPicker === "function") input.showPicker();
-      });
-    }
+
+
 
     // ========= Pagination state =========
     let offset = 0;
@@ -548,38 +544,57 @@ function generateMonthOptionsDbFormat(){
       }
     }
 
-    async function addRow(){
-      const payload = {
-        name: el("name").value || null,
-        month: el("month").value || null,
-        date_column: el("date_column").value || null, // YYYY-MM-DD
-        profit: el("profit").value ? Number(el("profit").value) : null,
-        coin: el("coin").value || null
-      };
+  async function addRow(){
+  const nameVal  = (el("name").value || "").trim();
+  const monthVal = (el("month").value || "").trim();
+  const coinVal  = (el("coin").value || "").trim();
 
-      if(!payload.name)  return setMsg("msgForm", "Name is required.", "err");
-      if(!payload.month) return setMsg("msgForm", "Month is required.", "err");
-      if(!payload.coin)  return setMsg("msgForm", "Coin is required.", "err");
+  const dateVal = (el("date_column").value || "").trim(); // YYYY-MM-DD
+  const profitRaw = (el("profit").value || "").trim();
 
-      setMsg("msgForm", "Creating...", "");
+  if(!nameVal)  return setMsg("msgForm", "Name is required.", "err");
+  if(!monthVal) return setMsg("msgForm", "Month is required.", "err");
+  if(!coinVal)  return setMsg("msgForm", "Coin is required.", "err");
+  if(!dateVal)  return setMsg("msgForm", "Date is required (choose from calendar).", "err");
+  if(!profitRaw) return setMsg("msgForm", "Profit is required.", "err");
 
-      try{
-        const r = await fetch(CREATE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if(!r.ok) throw new Error(`POST failed: ${r.status}`);
+  // Normalize: allow "12,5" or "12.5" and remove spaces
+  const normalized = profitRaw.replace(/\s+/g, "").replace(",", ".");
+  const profitNum = parseFloat(normalized);
 
-        setMsg("msgForm", "Created ✅", "ok");
+  if(!Number.isFinite(profitNum)){
+    return setMsg("msgForm", "Profit must be a valid number (e.g. 12.5).", "err");
+  }
 
-        offset = 0;
-        await loadRows();
-      }catch(e){
-        console.error(e);
-        setMsg("msgForm", e.message, "err");
-      }
-    }
+  const payload = {
+    name: nameVal,
+    month: monthVal,
+    date_column: dateVal,
+    profit: profitNum,
+    coin: coinVal
+  };
+
+  console.log("POST payload:", payload); // مهم للتأكد
+  setMsg("msgForm", "Creating...", "");
+
+  try{
+    const r = await fetch(CREATE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error(`POST failed: ${r.status}`);
+
+    setMsg("msgForm", "Created ✅", "ok");
+    offset = 0;
+    await loadRows();
+  }catch(e){
+    console.error(e);
+    setMsg("msgForm", e.message, "err");
+  }
+}
+
+
 
     function resetForm(){
       el("name").selectedIndex = 0;
