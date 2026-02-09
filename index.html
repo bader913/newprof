@@ -273,40 +273,40 @@
       <!-- Add form -->
       <section class="card">
         <div class="card-h">
-          <strong>Add new row</strong>
+          <strong>إضافة تربيح جديد</strong>
           <span class="pill">POST /profits</span>
         </div>
         <div class="card-b">
           <div class="row">
             <div>
-              <label for="name">Name (dropdown)</label>
+              <label for="name">الاسم (اختر من القائمة)</label>
               <select id="name"></select>
             </div>
             <div>
-              <label for="month">Month (dropdown)</label>
+              <label for="month">الشهر (اختر من القائمة)</label>
               <select id="month"></select>
             </div>
           </div>
 
           <div class="row3" style="margin-top:12px;">
             <div>
-              <label for="date_column">Date (calendar)</label>
+              <label for="date_column">التاريخ (افتح التقويم)</label>
               <input id="date_column" type="date" />
             </div>
             <div>
-              <label for="profit">Profit (number only)</label>
+              <label for="profit">التربيح (ارقام فقط)</label>
               <input id="profit" type="text" inputmode="decimal" placeholder="e.g. 1234.56 or 1234,56" />
 
             </div>
             <div>
-              <label for="coin">Coin (dropdown)</label>
+              <label for="coin">العملة (اخ)</label>
               <select id="coin"></select>
             </div>
           </div>
 
           <div class="actions">
-            <button class="primary" id="btnAdd">Add</button>
-            <button id="btnReset">Reset</button>
+            <button class="primary" id="btnAdd">اضافة</button>
+            <button id="btnReset">اعادة ضبط القيم</button>
           </div>
 
           <div class="msg" id="msgForm"></div>
@@ -316,58 +316,58 @@
       <!-- Filters -->
       <section class="card">
         <div class="card-h">
-          <strong>Filters</strong>
+          <strong>الفلاتر</strong>
           <span class="pill">GET /profits?limit&offset</span>
         </div>
         <div class="card-b">
           <div class="row">
             <div>
-              <label for="fName">Name</label>
+              <label for="fName">الاسم</label>
               <select id="fName"></select>
             </div>
             <div>
-              <label for="fCoin">Coin</label>
+              <label for="fCoin">العملة</label>
               <select id="fCoin"></select>
             </div>
           </div>
 
           <div class="row" style="margin-top:12px;">
             <div>
-              <label for="fMonth">Month</label>
+              <label for="fMonth">الشهر</label>
               <select id="fMonth"></select>
             </div>
             <div>
-              <label>Rows per page</label>
+              <label>عدد القيم في الصفحة</label>
               <select id="pageSize">
                 <option value="25">25</option>
                 <option value="50" selected>50</option>
                 <option value="100">100</option>
-                <option value="7000">All</option>
+                <option value="7000">جميع العملات</option>
               </select>
             </div>
           </div>
 
           <div class="row" style="margin-top:12px;">
             <div>
-              <label for="fFrom">Date from (calendar)</label>
+              <label for="fFrom">التاريخ من (افتح التقويم)</label>
               <input id="fFrom" type="date" />
             </div>
             <div>
-              <label for="fTo">Date to (calendar)</label>
+              <label for="fTo">التاريخ إلى (افتح التقويم)</label>
               <input id="fTo" type="date" />
             </div>
           </div>
 
           <div class="actions">
-            <button class="primary" id="btnApply">Apply</button>
-            <button id="btnClear">Clear</button>
+            <button class="primary" id="btnApply">تطبيق</button>
+            <button id="btnClear">مسح</button>
           </div>
 
           <div class="msg" id="msgList"></div>
 
           <div class="summary" id="summaryBox">
-            <span>Matched rows: <strong id="sumCount">-</strong></span>
-            <span>Total profit: <strong id="sumProfit">-</strong></span>
+            <span> عدد التسجيلات: <strong id="sumCount">-</strong></span>
+            <span>الربح الاجمالي : <strong id="sumProfit">-</strong></span>
             <span class="pill mono" id="sumMode" style="padding:4px 8px;">summary: -</span>
           </div>
         </div>
@@ -377,9 +377,9 @@
     <!-- Table -->
     <section class="card" style="margin-top:16px;">
       <div class="card-h">
-        <strong>Rows</strong>
+        <strong>السجلات</strong>
         <div class="actions" style="margin:0;">
-          <button id="btnRefresh">Refresh</button>
+          <button id="btnRefresh">تحديث</button>
         </div>
       </div>
 
@@ -401,8 +401,8 @@
 
       <div class="toolbar">
         <div class="pager">
-          <button id="btnPrev">◀ Prev</button>
-          <button id="btnNext">Next ▶</button>
+          <button id="btnPrev">◀ السابق</button>
+          <button id="btnNext">التالي ▶</button>
           <span class="mono" id="pageInfo"></span>
           <span class="mono" id="metaInfo"></span>
         </div>
@@ -745,7 +745,7 @@
         const text = await r.text();
         if (!r.ok) throw new Error(`POST failed: ${r.status} — ${text.slice(0, 160)}`);
 
-        setMsg("msgForm", "Created ✅", "ok");
+        setMsg("msgForm", "تم ادخال التربيح بنجاح ✅", "ok");
 
         offset = 0;
         await loadRows();
@@ -803,9 +803,9 @@
     fillSelect(el("month"), MONTH_OPTIONS, false);
 
     // Filter selects (with All)
-    fillSelect(el("fName"), NAME_OPTIONS, true, "(All Names)");
-    fillSelect(el("fCoin"), COIN_OPTIONS, true, "(All Coins)");
-    fillSelect(el("fMonth"), MONTH_OPTIONS, true, "(All Months)");
+    fillSelect(el("fName"), NAME_OPTIONS, true, "(جميع الاسماء)");
+    fillSelect(el("fCoin"), COIN_OPTIONS, true, "(جميع العملات)");
+    fillSelect(el("fMonth"), MONTH_OPTIONS, true, "(جميع الشهور)");
     const DEFAULT_MONTH = "Sunday, March 1, 2026";   // عدّلها إذا الصيغة عندك مختلفة
     el("month").value = DEFAULT_MONTH;
 
